@@ -1,0 +1,22 @@
+{
+  "name": "react-express-generate",
+  "version": "1.0.0",
+  "description": "This is a template generator for react and express. A fast way for building applications",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "node index.js"
+  },
+  "keywords": [
+    "react",
+    "express",
+    "generate",
+    "generator"
+  ],
+  "author": "desidev",
+  "license": "ISC",
+  "dependencies": {
+    "inquirer": "^9.2.11"
+  }
+}
