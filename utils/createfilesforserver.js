@@ -1,11 +1,6 @@
 import fs from "fs";
+import fse from "fs-extra/esm";
 import path from "path";
-
-import { copyFolder } from "./copyfiles.js";
-import { server } from "../server.js";
-
-const __filename = new URL(import.meta.url).pathname;
-const __dirname = path.dirname(__filename);
 
 const createDirectory = (directoryPath) => {
   if (!fs.existsSync(directoryPath)) {
@@ -36,7 +31,7 @@ export const createServerOnlySrc = (projectName) => {
   });
 
   const serverFilePath = path.join(projectName, "index.js");
-  createFileWithContent(serverFilePath, server);
+  createFileWithContent(serverFilePath, server); // You need to define 'server' content here.
 };
 
 export const createServerOnly = (projectName) => {
@@ -57,12 +52,22 @@ export const createServerOnly = (projectName) => {
 };
 
 export const createServerOnlyWithSrcAuth = (projectName) => {
-  const srcDirectory = path.join(projectName, "src");
-  createDirectory(srcDirectory);
-  const absolute = path.resolve(__dirname, "../server");
-  copyFolder(absolute, srcDirectory);
+  try {
+    const srcDirectory = path.join(projectName, "src");
+    createDirectory(srcDirectory);
+
+    const absoluteSource = path.resolve("server");
+    fse.copySync(absoluteSource, srcDirectory);
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 export const createServerOnlyWithAuth = (projectName) => {
-  copyFolder(path.join("../server"), projectName);
+  try {
+    const absoluteSource = path.resolve("server");
+    fse.copySync(absoluteSource, projectName);
+  } catch (error) {
+    console.error(error);
+  }
 };

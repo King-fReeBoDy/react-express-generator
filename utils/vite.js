@@ -1,10 +1,10 @@
-import { exec } from "child_process";
+import { execSync } from "child_process";
 
 export async function createViteProject(projectName) {
   return new Promise((resolve, reject) => {
     const command = `npm create vite@latest client -- --template react-ts`;
 
-    const childProcess = exec(command);
+    const childProcess = execSync(command);
 
     childProcess.stdout.on("data", (data) => {
       console.log(data);
