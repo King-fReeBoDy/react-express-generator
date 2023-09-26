@@ -31,7 +31,7 @@ export const createServerOnlySrc = (projectName) => {
   });
 
   const serverFilePath = path.join(projectName, "index.js");
-  createFileWithContent(serverFilePath, server); // You need to define 'server' content here.
+  createFileWithContent(serverFilePath, server);
 };
 
 export const createServerOnly = (projectName) => {
