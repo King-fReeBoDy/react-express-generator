@@ -1,9 +1,9 @@
 import fs from "fs";
 import path from "path";
 
-export const writeTsPackageJson = (answers, workingdir) => {
+export const writeTsPackageJson = (projectName, workingdir) => {
   const pm = `{
-  "name": "${answers.projectName}",
+  "name": "${projectName}",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -49,8 +49,8 @@ export const writeJsPackageJson = (projectName, workingdir) => {
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
-    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "build": "vite build",
+    "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -60,16 +60,14 @@ export const writeJsPackageJson = (projectName, workingdir) => {
   "devDependencies": {
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
-    "@typescript-eslint/eslint-plugin": "^6.0.0",
-    "@typescript-eslint/parser": "^6.0.0",
     "@vitejs/plugin-react": "^4.0.3",
     "autoprefixer": "^10.4.16",
     "eslint": "^8.45.0",
+    "eslint-plugin-react": "^7.32.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.3",
     "postcss": "^8.4.31",
     "tailwindcss": "^3.3.3",
-    "typescript": "^5.0.2",
     "vite": "^4.4.5"
   }
 }
