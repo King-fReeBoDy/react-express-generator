@@ -10,7 +10,7 @@ import {
 } from "./utils/createfilesforserver.js";
 
 import { clientTs, clientJs } from "./utils/createfilesforclient.js";
-import { writePackageJson } from "./utils/clientpm.js";
+import { writeJsPackageJson, writeTsPackageJson } from "./utils/clientpm.js";
 
 const questions = [
   {
@@ -67,7 +67,6 @@ async function generateTemplate(answers) {
 
   if (answers.projectType === "Client") {
     generateClient(answers);
-    writePackageJson(answers, workingdir);
   } else if (answers.projectType === "Server") {
     generateServer(answers);
   } else {
@@ -85,18 +84,13 @@ const followPropmts = (answers) => {
 };
 
 const generateClient = (answers) => {
-  if (answers.includeTailwind) {
-    if (answers.language === "React-ts") {
-      console.log("ts tailwind");
-    } else {
-      console.log("js tailwind");
-    }
+  const workingdir = path.join(process.cwd(), answers.projectName);
+  if (answers.language === "React-ts") {
+    clientTs(answers.projectName);
+    writeTsPackageJson(answers.projectName, workingdir);
   } else {
-    if (answers.language === "React-ts") {
-      clientTs(answers.projectName);
-    } else {
-      clientJs(answers.projectName);
-    }
+    clientJs(answers.projectName);
+    writeJsPackageJson(answers.projectName, workingdir);
   }
 };
 
