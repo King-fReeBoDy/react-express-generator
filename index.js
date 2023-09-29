@@ -32,14 +32,6 @@ const questions = [
   },
   {
     type: "confirm",
-    name: "includeTailwind",
-    message: "Include Tailwind",
-    default: true,
-    when: (answers) =>
-      answers.language === "React-ts" || answers.language === "React-js",
-  },
-  {
-    type: "confirm",
     name: "includeSrcDirectory",
     message: 'Include a "src" directory?',
     default: true,
@@ -78,9 +70,9 @@ async function generateTemplate(answers) {
 
 const followPropmts = (answers) => {
   console.log("");
-  console.log("cd", answers.projectName);
-  console.log("npm install");
-  console.log("npm run dev");
+  console.log(" cd", answers.projectName);
+  console.log(" npm install");
+  console.log(" npm run dev");
 };
 
 const generateClient = (answers) => {

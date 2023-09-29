@@ -1,7 +1,7 @@
 import fs from "fs";
 import fse from "fs-extra/esm";
 import path from "path";
-import { serverfile } from "../templates/serverfile.js";
+import { serverfile, packageServer } from "../templates/serverfile.js";
 
 const createDirectory = (directoryPath) => {
   if (!fs.existsSync(directoryPath)) {
@@ -33,6 +33,7 @@ export const createServerOnlySrc = (projectName) => {
 
   const serverFilePath = path.join(projectName, "index.js");
   createFileWithContent(serverFilePath, serverfile);
+  packageServer(projectName, path.join(process.cwd(), projectName));
 };
 
 export const createServerOnly = (projectName) => {
@@ -50,6 +51,7 @@ export const createServerOnly = (projectName) => {
 
   const serverFilePath = path.join(process.cwd(), projectName, "index.js");
   createFileWithContent(serverFilePath, serverfile);
+  packageServer(projectName, path.join(process.cwd(), projectName));
 };
 
 export const createServerOnlyWithSrcAuth = (projectName) => {
