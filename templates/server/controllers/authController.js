@@ -1,4 +1,5 @@
-const pool = require("../database/db");
+const { PrismaClient } = require("@prisma/client");
+const prisma = new PrismaClient();
 const bcrypt = require("bcrypt");
 
 const {
@@ -18,17 +19,13 @@ const login = async (req, res) => {
       .json({ success: false, message: "Provide all credentials" });
   }
 
-  const user = await pool.query("select * from users where email = $1", [
-    email,
-  ]);
+  const user = await prisma.users.findUnique({ where: { email } });
 
-  if (user.rows.length === 0) {
-    return res
-      .status(400)
-      .json({ success: false, message: "Incorrect password" });
+  if (!user) {
+    return res.status(404).json({ success: false, message: "User not found" });
   }
 
-  const hashPassword = await bcrypt.compare(password, user.rows[0]?.password);
+  const hashPassword = await bcrypt.compare(password, user.password);
 
   if (!hashPassword) {
     return res
@@ -49,10 +46,6 @@ const login = async (req, res) => {
 
 const register = async (req, res) => {
   const { email, password } = req.body;
-  let img;
-  if (req.files && req.files.length > 0) {
-    img = req.files[0].originalname;
-  }
 
   try {
     if (!email || !password) {
@@ -61,11 +54,9 @@ const register = async (req, res) => {
         .json({ success: false, message: "Provide all credentials" });
     }
 
-    const findUser = await pool.query("select * from users where email = $1", [
-      email,
-    ]);
+    const findUser = await prisma.users.findUnique({ where: { email } });
 
-    if (findUser.rows.length > 0) {
+    if (findUser) {
       return res
         .status(401)
         .json({ success: false, message: "User already exist" });
@@ -73,11 +64,13 @@ const register = async (req, res) => {
 
     const hashPassword = await bcrypt.hash(password, 10);
 
-    await pool.query(
-      "insert into users (email,password,image, created_at, updated_at) values($1,$2,$3,$4,$5)",
-      [email, hashPassword, img, new Date(), new Date()]
+    await prisma.users.create(
+      await prisma.user.create({
+        data: { email, password: hashPassword },
+      })
     );
-    res.status(200).json({ success: true, message: "Register successful" });
+
+    res.status(201).json({ success: true, message: "Register successful" });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: "An error occurred" });
@@ -85,7 +78,7 @@ const register = async (req, res) => {
 };
 
 const logout = (req, res) => {
-  res.clearCookie("refreshtoken", { path: "/refreshtoken" });
+  res.clearCookie("refreshtoken", { path: "/" });
   res.status(200).json({ success: true, message: "User logged out" });
 };
 
