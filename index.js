@@ -9,6 +9,9 @@ import {
   createServerOnly,
 } from "./utils/createfilesforserver.js";
 
+import { clientTs, clientJs } from "./utils/createfilesforclient.js";
+import { writePackageJson } from "./utils/clientpm.js";
+
 const questions = [
   {
     type: "input",
@@ -19,7 +22,7 @@ const questions = [
   {
     type: "list",
     name: "projectType",
-    choices: ["Client", "Server", "Both"],
+    choices: ["Client", "Server"],
   },
   {
     type: "list",
@@ -40,38 +43,46 @@ const questions = [
     name: "includeSrcDirectory",
     message: 'Include a "src" directory?',
     default: true,
-    when: (answers) =>
-      answers.projectType === "Server" || answers.projectType === "Both",
+    when: (answers) => answers.projectType === "Server",
   },
   {
     type: "confirm",
     name: "includeAuthentication",
     message: "Include authentication",
     default: true,
-    when: (answers) =>
-      answers.projectType === "Server" || answers.projectType === "Both",
+    when: (answers) => answers.projectType === "Server",
   },
 ];
 
 async function generateTemplate(answers) {
-  fs.mkdirSync(answers.projectName);
+  const workingdir = path.join(process.cwd(), answers.projectName);
+  fs.mkdirSync(workingdir);
 
   const createReadme = async () => {
     await fs.promises.writeFile(
-      path.join(answers.projectName, "README.md"),
+      path.join(process.cwd(), answers.projectName, "README.md"),
       `# ${answers.projectName}`
     );
   };
 
   if (answers.projectType === "Client") {
     generateClient(answers);
+    writePackageJson(answers, workingdir);
   } else if (answers.projectType === "Server") {
     generateServer(answers);
   } else {
     generateBoth(answers);
   }
   createReadme();
+  followPropmts(answers);
 }
+
+const followPropmts = (answers) => {
+  console.log("");
+  console.log("cd", answers.projectName);
+  console.log("npm install");
+  console.log("npm run dev");
+};
 
 const generateClient = (answers) => {
   if (answers.includeTailwind) {
@@ -82,16 +93,11 @@ const generateClient = (answers) => {
     }
   } else {
     if (answers.language === "React-ts") {
-      console.log("ts");
+      clientTs(answers.projectName);
     } else {
-      console.log("js");
+      clientJs(answers.projectName);
     }
   }
-  console.log("");
-  console.log("");
-  console.log("cd", answers.projectName);
-  console.log("npm install");
-  console.log("npm run dev");
 };
 
 const generateServer = (answers) => {
@@ -108,24 +114,6 @@ const generateServer = (answers) => {
       createServerOnly(answers.projectName);
     }
   }
-};
-
-const generateBoth = (answers) => {
-  // if (answers.includeAuthentication) {
-  //   if (answers.includeSrcDirectory) {
-  //     createServerOnlyWithSrcAuth(answers.projectName);
-  //   } else {
-  //     createServerOnlyWithAuth(answers.projectName);
-  //   }
-  // } else {
-  //   if (answers.includeSrcDirectory) {
-  //     createServerOnlySrc(answers.projectName);
-  //   } else {
-  //     createServerOnly(answers.projectName);
-  //   }
-  // }
-
-  console.log("Both");
 };
 
 inquirer.prompt(questions).then(generateTemplate);

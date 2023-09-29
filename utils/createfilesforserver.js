@@ -1,6 +1,7 @@
 import fs from "fs";
 import fse from "fs-extra/esm";
 import path from "path";
+import { serverfile } from "../templates/serverfile.js";
 
 const createDirectory = (directoryPath) => {
   if (!fs.existsSync(directoryPath)) {
@@ -31,7 +32,7 @@ export const createServerOnlySrc = (projectName) => {
   });
 
   const serverFilePath = path.join(projectName, "index.js");
-  createFileWithContent(serverFilePath, server);
+  createFileWithContent(serverFilePath, serverfile);
 };
 
 export const createServerOnly = (projectName) => {
@@ -44,19 +45,21 @@ export const createServerOnly = (projectName) => {
     "storage",
   ];
   subdirectories.forEach((subdir) => {
-    createDirectory(path.join(projectName, subdir));
+    createDirectory(path.join(process.cwd(), projectName, subdir));
   });
 
-  const serverFilePath = path.join(projectName, "index.js");
-  createFileWithContent(serverFilePath, server);
+  const serverFilePath = path.join(process.cwd(), projectName, "index.js");
+  createFileWithContent(serverFilePath, serverfile);
 };
 
 export const createServerOnlyWithSrcAuth = (projectName) => {
   try {
-    const srcDirectory = path.join(projectName, "src");
+    const srcDirectory = path.join(process.cwd(), projectName, "src");
     createDirectory(srcDirectory);
 
-    const absoluteSource = path.resolve("server");
+    const absoluteSource = path.resolve(
+      "react-express-generate/templates/server"
+    );
     fse.copySync(absoluteSource, srcDirectory);
   } catch (error) {
     console.error(error);
@@ -66,7 +69,7 @@ export const createServerOnlyWithSrcAuth = (projectName) => {
 export const createServerOnlyWithAuth = (projectName) => {
   try {
     const absoluteSource = path.resolve("server");
-    fse.copySync(absoluteSource, projectName);
+    fse.copySync(absoluteSource, path.join(process.cwd(), projectName));
   } catch (error) {
     console.error(error);
   }
