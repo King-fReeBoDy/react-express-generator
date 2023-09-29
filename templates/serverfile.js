@@ -1076,3 +1076,54 @@ export const packageServer = (projectName, workingdir) => {
   fs.writeFileSync(path.join(workingdir, "package.json"), pm);
   fs.writeFileSync(path.join(workingdir, "package-lock.json"), pml);
 };
+
+export const ignore = `# Ignore node_modules directory
+node_modules/
+
+# Ignore built files and directories
+dist/
+build/
+out/
+
+# Ignore environment-specific configuration files
+.env
+.env.local
+.env.*.local
+
+# Ignore log files and error reports
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Ignore editor and IDE files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.swn
+*.user
+*.suo
+*.sublime-workspace
+*.sublime-project
+
+# Ignore dependency lock files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Ignore OS and editor generated files
+.DS_Store
+Thumbs.db
+
+# Ignore miscellaneous files
+*.bak
+*.tmp
+
+# Ignore your local configuration files
+local-config.js
+`;

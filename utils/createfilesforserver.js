@@ -1,7 +1,7 @@
 import fs from "fs";
 import fse from "fs-extra/esm";
 import path from "path";
-import { serverfile, packageServer } from "../templates/serverfile.js";
+import { serverfile, packageServer, ignore } from "../templates/serverfile.js";
 
 const createDirectory = (directoryPath) => {
   if (!fs.existsSync(directoryPath)) {
@@ -31,8 +31,10 @@ export const createServerOnlySrc = (projectName) => {
     createDirectory(path.join(srcDirectory, subdir));
   });
 
-  const serverFilePath = path.join(projectName, "index.js");
+  const serverFilePath = path.join(process.cwd(), projectName, "index.js");
+  const gitIgnore = path.join(process.cwd(), projectName, ".gitignore");
   createFileWithContent(serverFilePath, serverfile);
+  createFileWithContent(gitIgnore, ignore);
   packageServer(projectName, path.join(process.cwd(), projectName));
 };
 
@@ -50,7 +52,9 @@ export const createServerOnly = (projectName) => {
   });
 
   const serverFilePath = path.join(process.cwd(), projectName, "index.js");
+  const gitIgnore = path.join(process.cwd(), projectName, ".gitignore");
   createFileWithContent(serverFilePath, serverfile);
+  createFileWithContent(gitIgnore, ignore);
   packageServer(projectName, path.join(process.cwd(), projectName));
 };
 
